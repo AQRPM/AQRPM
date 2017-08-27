@@ -1,5 +1,7 @@
 package me.mnpn.vault;
 
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -56,10 +58,15 @@ public class VaultLogin extends Application {
 
 		Platform.runLater(() -> username.requestFocus());
 
-		// Convert the result to a username-password-pair when the login button is clicked.
 		dialog.setResultConverter(dialogButton -> {
 		    if (dialogButton == login) {
 		        System.out.print(username.getText() + "," + password.getText());
+		        try {
+					VaultMainMenu.start(s);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		    }
 		    if (dialogButton == register) {
 		    	VaultRegister.register();

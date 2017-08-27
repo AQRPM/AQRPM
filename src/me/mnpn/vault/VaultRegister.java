@@ -191,9 +191,7 @@ public class VaultRegister {
 					&& !password.getText().toString().matches(".*[a-zA-Z].*")) {
 				dialog.setHeaderText("The fuck is wrong with you, idiot? "
 						+ "Do you think your fucking phone number is a secure password, or what? "
-						+ "Nobody is gonna guess that, right?" + "Wrong. Imagine how fun the 'hackers' are having, "
-						+ "when they can literally just increment a number until they find your password. "
-						+ "End yourself.");
+						+ "Nobody is gonna guess that, right? Wrong. End yourself.");
 				dialog.setGraphic(new ImageView("/com/sun/javafx/scene/control/skin/modena/dialog-warning.png"));
 			}
 		});
@@ -287,6 +285,15 @@ public class VaultRegister {
 					stacktrace(small, error);
 					System.exit(0);
 				}
+
+				/*try {
+					System.out.println(parseJSON("hi"));
+				} catch (IOException e1) {
+					String error = getStackTrace(e1);
+					String small = e1.toString();
+					stacktrace(small, error);
+				}*/
+
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("AQRPM: Register (v" + version + ")");
 				alert.setHeaderText("Success!");
