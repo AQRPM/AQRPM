@@ -1,8 +1,12 @@
 package me.mnpn.vault;
 
+import java.awt.Desktop;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -29,7 +33,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.util.Pair;
 
@@ -42,7 +45,7 @@ public class VaultRegister {
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
 		dialog.setTitle("AQRPM: Register (v" + version + ")");
 		dialog.setHeaderText("Register a new user");
-		dialog.setGraphic(new ImageView("/icon64.png"));
+		dialog.setGraphic(new ImageView("/pm2-64.png"));
 
 		ButtonType register = new ButtonType("Register", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().addAll(register, ButtonType.CANCEL);
@@ -50,17 +53,12 @@ public class VaultRegister {
 		GridPane grid = new GridPane();
 		grid.setHgap(20);
 		grid.setVgap(10);
-		grid.setPadding(new Insets(20, 150, 0, 10));
-		
-		HBox prog = new HBox();
-		prog.setPadding(new Insets(20, 0, 0, 10));
+		grid.setPadding(new Insets(20, 20, 0, 10));
+
 		ProgressBar pb = new ProgressBar(0);
-		pb.setPrefWidth(250);
-		prog.setPrefHeight(50);
-		prog.getChildren().add(pb);
-		grid.add(prog, 2, 5);
-		
-		
+		pb.setPrefWidth(375);
+		grid.add(pb, 2, 4);
+
 		TextField username = new TextField();
 		username.setPromptText("Username");
 		PasswordField password = new PasswordField();
@@ -98,13 +96,35 @@ public class VaultRegister {
 			alert.setTitle("Create a good password");
 			alert.setContentText("A good password contains:\n\n"
 					+ "1. Many characters. 12, minimum, but we recommend atleast 16.\n"
-					+ "2. Numbers, Symbols, UPPERCASE letter, lowercase letters.\n"
-					+ "3. No Dictionary Words.\n\n"
+					+ "2. Numbers, Symbols, UPPERCASE letter, lowercase letters.\n" + "3. No Dictionary Words.\n\n"
 					+ "What is a bad password?\n\n"
 					+ "Any password that contains names, personal info and dictionary words is very bad.\n\n"
 					+ "We both know you're an inconciderate little prick, and you don't know how to choose a half-decent password.\n"
-					+ "Go get AQRPC, A quite rude password chooser, it might help your tiny brain understand what a good password is.\n"
-					+ "https://legolord208.github.io/software#aqrpc");
+					+ "Go get AQRPC, A quite rude password chooser, it might help your tiny brain understand what a good password is.\n");
+			Label dl = new Label();
+			dl.setText("Download");
+			dl.setUnderline(true);
+			dl.setOnMouseClicked(event -> {
+				if (Desktop.isDesktopSupported()) {
+					try {
+						Desktop.getDesktop().browse(new URI("https://git.io/v53HZ"));
+					} catch (IOException e2) {
+						String error = getStackTrace(e2);
+						String small = e2.toString();
+						stacktrace(small, error);
+						System.exit(0);
+					} catch (URISyntaxException e2) {
+						String error = getStackTrace(e2);
+						String small = e2.toString();
+						stacktrace(small, error);
+						System.exit(0);
+					}
+				}
+			});
+			GridPane expContent = new GridPane();
+			expContent.add(dl, 0, 0);
+			alert.getDialogPane().setExpandableContent(expContent);
+			expContent.setPrefHeight(250);
 			alert.showAndWait();
 		});
 		grid.add(pw, 0, 3);
@@ -113,13 +133,21 @@ public class VaultRegister {
 		registerButton.setDisable(true);
 
 		username.textProperty().addListener((observable, oldValue, newValue) -> {
-			double finalstrength = (updateBar(password.getText().toString())/10);
-			if (finalstrength > 0.3){pb.setStyle("-fx-accent: red;");}
-			if (finalstrength < 0.5){pb.setStyle("-fx-accent: orange;");}
-			if (finalstrength < 0.7){pb.setStyle("-fx-accent: yellow;");}
-			if (finalstrength < 0.9){pb.setStyle("-fx-accent: green;");}
+			double finalstrength = (updateBar(password.getText().toString()) / 10);
+			if (finalstrength < 0.31) {
+				pb.setStyle("-fx-accent: red;");
+			}
+			if (finalstrength > 0.49) {
+				pb.setStyle("-fx-accent: orange;");
+			}
+			if (finalstrength > 0.69) {
+				pb.setStyle("-fx-accent: yellow;");
+			}
+			if (finalstrength > 0.89) {
+				pb.setStyle("-fx-accent: green;");
+			}
 			pb.setProgress(finalstrength);
-			
+
 			registerButton.setDisable(newValue.trim().isEmpty());
 			if (username.getText().toString().equals("")) {
 				dialog.setHeaderText("The user field cannot be empty.");
@@ -131,13 +159,21 @@ public class VaultRegister {
 		});
 
 		rpassword.textProperty().addListener((observable, oldValue, newValue) -> {
-			double finalstrength = (updateBar(password.getText().toString())/10);
-			if (finalstrength > 0.3){pb.setStyle("-fx-accent: red;");}
-			if (finalstrength < 0.5){pb.setStyle("-fx-accent: orange;");}
-			if (finalstrength < 0.7){pb.setStyle("-fx-accent: yellow;");}
-			if (finalstrength < 0.9){pb.setStyle("-fx-accent: green;");}
+			double finalstrength = (updateBar(password.getText().toString()) / 10);
+			if (finalstrength < 0.31) {
+				pb.setStyle("-fx-accent: red;");
+			}
+			if (finalstrength > 0.49) {
+				pb.setStyle("-fx-accent: orange;");
+			}
+			if (finalstrength > 0.69) {
+				pb.setStyle("-fx-accent: yellow;");
+			}
+			if (finalstrength > 0.89) {
+				pb.setStyle("-fx-accent: green;");
+			}
 			pb.setProgress(finalstrength);
-			
+
 			if (username.getText().toString().equals("")) {
 				username.setText("Faggot");
 			}
@@ -162,14 +198,22 @@ public class VaultRegister {
 		});
 
 		password.textProperty().addListener((observable, oldValue, newValue) -> {
-			double finalstrength = (updateBar(password.getText().toString())/10);
-			if (finalstrength > 0.3){pb.setStyle("-fx-accent: red;");}
-			if (finalstrength < 0.5){pb.setStyle("-fx-accent: orange;");}
-			if (finalstrength < 0.7){pb.setStyle("-fx-accent: yellow;");}
-			if (finalstrength < 0.9){pb.setStyle("-fx-accent: green;");}
+			double finalstrength = (updateBar(password.getText().toString()) / 10);
+			if (finalstrength < 0.31) {
+				pb.setStyle("-fx-accent: red;");
+			}
+			if (finalstrength > 0.49) {
+				pb.setStyle("-fx-accent: orange;");
+			}
+			if (finalstrength > 0.69) {
+				pb.setStyle("-fx-accent: yellow;");
+			}
+			if (finalstrength > 0.89) {
+				pb.setStyle("-fx-accent: green;");
+			}
 			System.out.println(finalstrength);
 			pb.setProgress(finalstrength);
-			
+
 			if (username.getText().toString().equals("")) {
 				username.setText("Faggot");
 			}
@@ -206,7 +250,9 @@ public class VaultRegister {
 						+ password.getText() + ", really?! I could have a baby generate better passwords than that.");
 				security.setText("Safety of bad passwords.");
 				dialog.setGraphic(new ImageView("/com/sun/javafx/scene/control/skin/modena/dialog-warning.png"));
-			} else if (password.getText().toString().matches(".*[0-9].*")) {
+			} else if (password.getText().toString().matches(".*[0-9].*")
+					&& !password.getText().toString().matches(".*[a-z].*")
+					&& !password.getText().toString().matches(".*[A-Z].*")) {
 				dialog.setHeaderText("Your password should not only consist of numbers.");
 				dialog.setGraphic(new ImageView("/com/sun/javafx/scene/control/skin/modena/dialog-information.png"));
 			}
@@ -254,17 +300,29 @@ public class VaultRegister {
 		dialog.getDialogPane().setContent(grid);
 		dialog.showAndWait();
 	}
-	
+
 	public static double updateBar(String password) {
 		double finalstrength = 0;
 		System.out.println(password);
 		if (password.length() > 16) {
-			finalstrength = finalstrength + 20;
+			finalstrength = finalstrength + 2;
+		}
+		if (password.length() > 24) {
+			finalstrength = finalstrength + 1.5;
 		}
 		if (password.matches(".*[0-9].*")) {
-			finalstrength = finalstrength + 20;
+			finalstrength = finalstrength + 2;
 		}
-		finalstrength = finalstrength/10;
+		if (password.matches(".*[a-z].*")) {
+			finalstrength = finalstrength + 0.5;
+		}
+		if (password.matches(".*[A-Z].*")) {
+			finalstrength = finalstrength + 2;
+		}
+		if (!password.matches(".*^[A-Z0-9]+$.*")) { // Oh wow, the moron must
+													// have a special character!
+			finalstrength = finalstrength + 2;
+		}
 		return finalstrength;
 	}
 
@@ -324,8 +382,7 @@ public class VaultRegister {
 		return Base64.getEncoder().encodeToString(data);
 	}
 
-	public static String hash(String passwordToHash)
-			throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public static String hash(String passwordToHash) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		MessageDigest md = MessageDigest.getInstance("SHA-512");
 		byte[] bytes = md.digest(passwordToHash.getBytes("UTF-8"));
 		StringBuilder sb = new StringBuilder();
