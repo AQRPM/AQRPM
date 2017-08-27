@@ -187,7 +187,8 @@ public class VaultRegister {
 						username.getText().toString() + ", you do realise that the passwords don't match, do you?");
 				dialog.setGraphic(new ImageView("/com/sun/javafx/scene/control/skin/modena/dialog-warning.png"));
 			}
-			if (password.getText().toString().matches(".*[0-9].*")) {
+			if (password.getText().toString().matches(".*[0-9].*")
+					&& !password.getText().toString().matches(".*[a-zA-Z].*")) {
 				dialog.setHeaderText("The fuck is wrong with you, idiot? "
 						+ "Do you think your fucking phone number is a secure password, or what? "
 						+ "Nobody is gonna guess that, right?" + "Wrong. Imagine how fun the 'hackers' are having, "
@@ -211,7 +212,6 @@ public class VaultRegister {
 			if (finalstrength > 0.89) {
 				pb.setStyle("-fx-accent: green;");
 			}
-			System.out.println(finalstrength);
 			pb.setProgress(finalstrength);
 
 			if (username.getText().toString().equals("")) {
@@ -251,8 +251,7 @@ public class VaultRegister {
 				security.setText("Safety of bad passwords.");
 				dialog.setGraphic(new ImageView("/com/sun/javafx/scene/control/skin/modena/dialog-warning.png"));
 			} else if (password.getText().toString().matches(".*[0-9].*")
-					&& !password.getText().toString().matches(".*[a-z].*")
-					&& !password.getText().toString().matches(".*[A-Z].*")) {
+					&& !password.getText().toString().matches(".*[a-zA-Z].*")) {
 				dialog.setHeaderText("Your password should not only consist of numbers.");
 				dialog.setGraphic(new ImageView("/com/sun/javafx/scene/control/skin/modena/dialog-information.png"));
 			}
@@ -303,7 +302,6 @@ public class VaultRegister {
 
 	public static double updateBar(String password) {
 		double finalstrength = 0;
-		System.out.println(password);
 		if (password.length() > 16) {
 			finalstrength = finalstrength + 2;
 		}
