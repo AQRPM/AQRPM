@@ -1,6 +1,7 @@
 package me.mnpn.vault;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import javafx.geometry.Insets;
@@ -21,11 +22,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import me.mnpn.vault.structs.StructVault;
 
 public class VaultMainMenu {
 
 	static String version = "1.0.0";
-	static String username = "tmp";
+	static StructVault vault = Vault.loadVault(Paths.get("C:/Users/mnpn0/Desktop/vault.aqrpm"));
+	static String username = vault.iv;
 
 	public static void start(Stage s) throws IOException {
 		s.setTitle("AQRPM (v" + version + ")");
