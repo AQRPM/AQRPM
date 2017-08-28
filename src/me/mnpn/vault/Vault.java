@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javafx.application.Application;
 import me.mnpn.vault.structs.StructVault;
@@ -17,12 +18,17 @@ public class Vault {
 			System.out.println("Yeah.. I don't really do arguments.");
 			return;
 		}
-		StructVault vault = loadVault(Paths.get("C:/Users/mnpn0/Desktop/vault.aqrpm"));
-		System.out.println(vault.iv);
+		Path path = Paths.get("vault.aqrpm");
+		StructVault vault = loadVault(path);
+
+		vault.iv += "!";
+		saveVault(path, vault);
+
 		Application.launch(VaultLogin.class);
 	}
 
-	public static final Gson GSON = new Gson();
+	// public static final Gson GSON = new Gson();
+	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	public static StructVault loadVault(Path path) {
 		String content = null;
@@ -33,5 +39,12 @@ public class Vault {
 		}
 		return GSON.fromJson(content, StructVault.class);
 	}
-
+	public static void saveVault(Path path, StructVault vault) {
+		String content = GSON.toJson(vault, StructVault.class);
+		try {
+			Files.write(path, content.getBytes(StandardCharsets.UTF_8));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
