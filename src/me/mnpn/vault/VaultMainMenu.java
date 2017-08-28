@@ -44,10 +44,8 @@ public class VaultMainMenu {
 		toprow.setVgap(10);
 		toprow.setPadding(new Insets(0, 0, 10, 0));
 		
-		GridPane bottomrow = new GridPane();
+		HBox bottomrow = new HBox();
 		bottomrow.setAlignment(Pos.BOTTOM_RIGHT);
-		bottomrow.setHgap(10);
-		bottomrow.setVgap(10);
 		bottomrow.setPadding(new Insets(0, 0, 10, 10));
 
 		CheckBox auto = new CheckBox("Checkbox");
@@ -68,6 +66,10 @@ public class VaultMainMenu {
 		Text title = new Text(" Welcome, " + username);
 		title.setFont(Font.font("Ubuntu", FontWeight.NORMAL, 40));
 		layout.getChildren().add(title);
+		
+		Separator bottomseparator = new Separator();
+		bottomseparator.setMaxWidth(s.getMaxWidth());
+		layout.getChildren().add(bottomseparator);
 
 		Button logout = new Button("Log out");
 		logout.setOnAction(e -> {
@@ -85,8 +87,7 @@ public class VaultMainMenu {
 			    alert.close();
 			}
 		});
-		bottomrow.add(logout, 0, 0);
-		
+		bottomrow.getChildren().add(logout);
 		layout.getChildren().add(bottomrow);
 		
 		Scene scene = new Scene(layout, 1024, 512);
