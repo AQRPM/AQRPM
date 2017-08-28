@@ -18,11 +18,6 @@ public class Vault {
 			System.out.println("Yeah.. I don't really do arguments.");
 			return;
 		}
-		Path path = Paths.get("vault.aqrpm");
-		StructVault vault = loadVault(path);
-
-		vault.iv += "!";
-		saveVault(path, vault);
 
 		Application.launch(VaultLogin.class);
 	}
