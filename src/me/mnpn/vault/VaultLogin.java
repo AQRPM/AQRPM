@@ -26,11 +26,9 @@ import javafx.stage.FileChooser;
 import javafx.util.Pair;
 
 public class VaultLogin extends Application {
-	public static final String VERSION = "1.0.0";
-
 	public void start(Stage s) {
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
-		dialog.setTitle("AQRPM: Login (v" + VERSION + ")");
+		dialog.setTitle("AQRPM: Login (v" + Vault.VERSION + ")");
 		dialog.setHeaderText("Log in to continue");
 		dialog.setGraphic(new ImageView(this.getClass().getResource("/pm2-64.png").toString()));
 
@@ -81,8 +79,7 @@ public class VaultLogin extends Application {
 					alert.showAndWait();
 					return null;
 				}
-				// TODO: Use file
-		        System.out.println(password.getText());
+				Vault.vault = Vault.loadVault(file.get().toPath());
 		        try {
 					VaultMainMenu.start(s);
 				} catch (IOException e) {

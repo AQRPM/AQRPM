@@ -25,13 +25,8 @@ import javafx.stage.Stage;
 import me.mnpn.vault.structs.StructVault;
 
 public class VaultMainMenu {
-
-	static String version = "1.0.0";
-	static StructVault vault = Vault.loadVault(Paths.get("C:/Users/mnpn0/Desktop/vault.aqrpm"));
-	static String username = vault.iv;
-
 	public static void start(Stage s) throws IOException {
-		s.setTitle("AQRPM (v" + version + ")");
+		s.setTitle("AQRPM (v" + Vault.VERSION + ")");
 		s.getIcons().add(new Image("/pm2-512.png"));
 
 		VBox layout = new VBox();
@@ -66,7 +61,7 @@ public class VaultMainMenu {
 		topseparator.setMaxWidth(s.getMaxWidth());
 		layout.getChildren().add(topseparator);
 
-		Text title = new Text(" Welcome, " + username);
+		Text title = new Text(" Welcome, " + Vault.vault.iv); // For now LOL
 		title.setFont(Font.font("Ubuntu", FontWeight.NORMAL, 40));
 		layout.getChildren().add(title);
 		
