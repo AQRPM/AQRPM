@@ -1,14 +1,16 @@
 package me.mnpn.vault;
 
-import java.io.IOException;
 import java.io.File;
-
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -16,14 +18,13 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.text.Text;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Pair;
+import me.mnpn.vault.structs.StructVault;
 
 public class VaultLogin extends Application {
 	public void start(Stage s) {
@@ -44,16 +45,15 @@ public class VaultLogin extends Application {
 		PasswordField password = new PasswordField();
 		password.setPromptText("Password");
 
-		Button button = new Button("Select vault file");
+		Button selectVault = new Button("Select vault file");
 		AtomicReference<File> file = new AtomicReference<>();
-		button.setOnAction(e -> {
+		selectVault.setOnAction(e -> {
 			FileChooser chooser = new FileChooser();
 			file.set(chooser.showOpenDialog(s));
-			// TODO: Use file as vault.
 		});
 
 		grid.add(new Label("Vault:"), 0, 0);
-		grid.add(button, 1, 0);
+		grid.add(selectVault, 1, 0);
 		grid.add(new Label("Password:"), 0, 1);
 		grid.add(password, 1, 1);
 
@@ -79,7 +79,33 @@ public class VaultLogin extends Application {
 					alert.showAndWait();
 					return null;
 				}
-				Vault.vault = Vault.loadVault(file.get().toPath());
+				try {
+					Vault.key = Vault.hash(password.getText());
+					Vault.loadVault(file.get().toPath());
+				} catch (IOException | GeneralSecurityException e) {
+					Vault.stacktrace(e);
+				}
+				String verification = null;
+				try {
+					verification = Vault.decrypt(Vault.vault.verification);
+				} catch (GeneralSecurityException e) {
+					Text label = new Text("Either the master password is incorrect because you suck at typing, or your database is fucking done for (corrupt. Good job.)");
+					label.setWrappingWidth(600);
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.getDialogPane().setContent(label);
+					alert.setResizable(true);
+					alert.showAndWait();
+					return null;
+				}
+				if (!StructVault.VERIFICATION.equals(verification)) {
+					Text label = new Text("Either the master password is incorrect because you suck at typing, or your database is fucking done for (corrupt. Good job.)");
+					label.setWrappingWidth(600);
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.getDialogPane().setContent(label);
+					alert.setResizable(true);
+					alert.showAndWait();
+					return null;
+				}
 		        try {
 					VaultMainMenu.start(s);
 				} catch (IOException e) {

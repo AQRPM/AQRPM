@@ -1,6 +1,7 @@
 package me.mnpn.vault;
 
 import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -13,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -22,11 +24,13 @@ import javax.crypto.spec.SecretKeySpec;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.text.Text;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
@@ -34,7 +38,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.stage.FileChooser;
 import javafx.util.Pair;
+import me.mnpn.vault.structs.StructVault;
 
 public class VaultRegister {
 
@@ -59,15 +65,19 @@ public class VaultRegister {
 		pb.setPrefWidth(375);
 		grid.add(pb, 2, 4);
 
-		TextField username = new TextField();
-		username.setPromptText("Username");
+		Button selectVault = new Button("Select vault file");
+		AtomicReference<File> file = new AtomicReference<>();
+		selectVault.setOnAction(e -> {
+			FileChooser chooser = new FileChooser();
+			file.set(chooser.showSaveDialog(null));
+		});
 		PasswordField password = new PasswordField();
 		password.setPromptText("Password");
 		PasswordField rpassword = new PasswordField();
 		rpassword.setPromptText("Repeat Password");
 
-		grid.add(new Label("Username:"), 0, 0);
-		grid.add(username, 2, 0);
+		grid.add(new Label("Vault:"), 0, 0);
+		grid.add(selectVault, 2, 0);
 		grid.add(new Label("Password:"), 0, 1);
 		grid.add(password, 2, 1);
 		grid.add(new Label("Repeat Password:"), 0, 2);
@@ -109,15 +119,9 @@ public class VaultRegister {
 					try {
 						Desktop.getDesktop().browse(new URI("https://git.io/v53HZ"));
 					} catch (IOException e2) {
-						String error = getStackTrace(e2);
-						String small = e2.toString();
-						stacktrace(small, error);
-						System.exit(0);
+						Vault.stacktrace(e2);
 					} catch (URISyntaxException e2) {
-						String error = getStackTrace(e2);
-						String small = e2.toString();
-						stacktrace(small, error);
-						System.exit(0);
+						Vault.stacktrace(e2);
 					}
 				}
 			});
@@ -132,7 +136,7 @@ public class VaultRegister {
 		Node registerButton = dialog.getDialogPane().lookupButton(register);
 		registerButton.setDisable(true);
 
-		username.textProperty().addListener((observable, oldValue, newValue) -> {
+		password.textProperty().addListener((observable, oldValue, newValue) -> {
 			double finalstrength = (updateBar(password.getText().toString()) / 10);
 			if (finalstrength < 0.31) {
 				pb.setStyle("-fx-accent: red;");
@@ -149,8 +153,8 @@ public class VaultRegister {
 			pb.setProgress(finalstrength);
 
 			registerButton.setDisable(newValue.trim().isEmpty());
-			if (username.getText().toString().equals("")) {
-				dialog.setHeaderText("The user field cannot be empty.");
+			if (password.getText().toString().equals("")) {
+				dialog.setHeaderText("The password field cannot be empty.");
 				dialog.setGraphic(new ImageView("/com/sun/javafx/scene/control/skin/modena/dialog-warning.png"));
 			} else {
 				dialog.setHeaderText("Register a new user");
@@ -174,9 +178,6 @@ public class VaultRegister {
 			}
 			pb.setProgress(finalstrength);
 
-			if (username.getText().toString().equals("")) {
-				username.setText("Faggot");
-			}
 			if (password.getText().toString().equals(rpassword.getText().toString())) {
 				registerButton.setDisable(false);
 				dialog.setHeaderText("Register a new user");
@@ -184,7 +185,7 @@ public class VaultRegister {
 			} else {
 				registerButton.setDisable(true);
 				dialog.setHeaderText(
-						username.getText().toString() + ", you do realise that the passwords don't match, do you?");
+						"Idiot, you do realise that the passwords don't match, do you?");
 				dialog.setGraphic(new ImageView("/com/sun/javafx/scene/control/skin/modena/dialog-warning.png"));
 			}
 			if (password.getText().toString().matches(".*[0-9].*")
@@ -212,28 +213,25 @@ public class VaultRegister {
 			}
 			pb.setProgress(finalstrength);
 
-			if (username.getText().toString().equals("")) {
-				username.setText("Faggot");
-			}
 			if (password.getText().toString().equals(rpassword.getText().toString())) {
 				registerButton.setDisable(false);
 				dialog.setHeaderText("Register a new user");
 				dialog.setGraphic(new ImageView("/icon64.png"));
 			} else {
 				registerButton.setDisable(true);
-				dialog.setHeaderText(username.getText() + ", you do realise that the passwords don't match, do you?");
+				dialog.setHeaderText("Idiot, you do realise that the passwords don't match, do you?");
 				dialog.setGraphic(new ImageView("/com/sun/javafx/scene/control/skin/modena/dialog-warning.png"));
 			}
 			if (password.getLength() == 1) {
-				dialog.setHeaderText(username.getText() + ". You chose this password, didn't you? It's "
-						+ "1 fucking character. Seriously. Look at what you've done, " + username.getText()
+				dialog.setHeaderText("Idiot. You chose this password, didn't you? It's "
+						+ "1 fucking character. Seriously. Look at what you've done"
 						+ ". Is this safe?");
 				security.setText("Safety of bad passwords.");
 				dialog.setGraphic(new ImageView("/com/sun/javafx/scene/control/skin/modena/dialog-warning.png"));
 			} else if (password.getLength() < 6) {
-				dialog.setHeaderText(username.getText() + ". You chose this password, didn't you? It's "
-						+ password.getText().length() + " fucking characters. Seriously. Look at what you've done, "
-						+ username.getText() + ". Is this safe?");
+				dialog.setHeaderText("Idiot. You chose this password, didn't you? It's "
+						+ password.getText().length() + " fucking characters. Seriously. Look at what you've done"
+						+ ". Is this safe?");
 				security.setText("Safety of bad passwords.");
 				dialog.setGraphic(new ImageView("/com/sun/javafx/scene/control/skin/modena/dialog-warning.png"));
 			} else {
@@ -242,8 +240,8 @@ public class VaultRegister {
 				security.setText("Safety of passwords.");
 			}
 			if (password.getText().toString().startsWith("1234")) {
-				dialog.setHeaderText(username.getText()
-						+ ", I hope your screen goes black so you can see your reflection on your monitor, "
+				dialog.setHeaderText(
+						"Idiot, I hope your screen goes black so you can see your reflection on your monitor, "
 						+ "just so you can see what a massive failure you are. You chose a password that increments like a pattern. "
 						+ password.getText() + ", really?! I could have a baby generate better passwords than that.");
 				security.setText("Safety of bad passwords.");
@@ -262,42 +260,35 @@ public class VaultRegister {
 
 		dialog.setResultConverter(dialogButton -> {
 			if (dialogButton == register) {
+				if (file.get() == null) {
+					Text label = new Text("Seriously? You didn't select a fucking file. What the fuck do you want me to save your vault into for you? The void? Fucking idiot. Select a file next time, PLEASE.");
+					label.setWrappingWidth(600);
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.getDialogPane().setContent(label);
+					alert.setResizable(true);
+					alert.showAndWait();
+					return null;
+				}
 				try {
-					String hashed = hash(password.getText());
-					String encrypted = encrypt(password.getText().getBytes(), hashed.getBytes(), generateIV());
-					System.out.println(encrypted);
-					try {
-						System.out.println(hash(password.getText()));
-					} catch (UnsupportedEncodingException e1) {
-						String error = getStackTrace(e1);
-						String small = e1.toString();
-						stacktrace(small, error);
-						System.exit(0);
-					}
-				} catch (GeneralSecurityException e1) {
-					String error = getStackTrace(e1);
-					String small = e1.toString();
-					stacktrace(small, error);
-					System.exit(0);
-				} catch (UnsupportedEncodingException e2) {
-					String error = getStackTrace(e2);
-					String small = e2.toString();
-					stacktrace(small, error);
-					System.exit(0);
+					Vault.key = Vault.hash(password.getText());
+				} catch (GeneralSecurityException | UnsupportedEncodingException e) {
+					Vault.stacktrace(e);
 				}
 
-				/*try {
-					System.out.println(parseJSON("hi"));
-				} catch (IOException e1) {
-					String error = getStackTrace(e1);
-					String small = e1.toString();
-					stacktrace(small, error);
-				}*/
+				Vault.vault = new StructVault();
+				try {
+					Vault.vault.iv = Vault.generateIV();
+					Vault.vault.verification = Vault.encrypt(StructVault.VERIFICATION);
+
+					Vault.saveVault(file.get().toPath());
+				} catch (GeneralSecurityException | IOException e) {
+					Vault.stacktrace(e);
+				}
 
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("AQRPM: Register (v" + version + ")");
 				alert.setHeaderText("Success!");
-				alert.setContentText("User " + username.getText().toString()
+				alert.setContentText("User"
 						+ " successfully created! You can now log in using your Master Password.");
 				alert.showAndWait();
 			}
@@ -329,78 +320,5 @@ public class VaultRegister {
 			finalstrength = finalstrength + 2;
 		}
 		return finalstrength;
-	}
-
-	private static void stacktrace(String small, String error) {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle("Exception!");
-		alert.setHeaderText("Something went wrong, and it's actually not your fault for once!");
-		alert.setContentText(small);
-		Label label = new Label("The exception is:");
-		TextArea textArea = new TextArea(error);
-		textArea.setEditable(false);
-		textArea.setWrapText(true);
-		textArea.setMaxWidth(Double.MAX_VALUE);
-		textArea.setMaxHeight(Double.MAX_VALUE);
-		GridPane.setVgrow(textArea, Priority.ALWAYS);
-		GridPane.setHgrow(textArea, Priority.ALWAYS);
-		GridPane expContent = new GridPane();
-		expContent.setMaxWidth(Double.MAX_VALUE);
-		expContent.add(label, 0, 0);
-		expContent.add(textArea, 0, 1);
-		alert.getDialogPane().setExpandableContent(expContent);
-		alert.showAndWait();
-	}
-
-	public static String encrypt(byte[] data, byte[] key, byte[] secretKey) throws GeneralSecurityException {
-		String mode = secretKey == null ? "ECB" : "CBC";
-		key = Arrays.copyOf(key, 16);
-		SecretKeySpec spec = new SecretKeySpec(key, "AES");
-		spec = new SecretKeySpec(key, "AES");
-		Cipher c = Cipher.getInstance("AES/" + mode + "/PKCS5Padding");
-		c.init(Cipher.ENCRYPT_MODE, spec);
-
-		if (secretKey == null)
-			c.init(Cipher.ENCRYPT_MODE, spec);
-		else
-			c.init(Cipher.ENCRYPT_MODE, spec, new IvParameterSpec(secretKey));
-
-		return base64(c.doFinal(data));
-	}
-
-	static SecureRandom r = new SecureRandom();
-
-	private static byte[] generateIV() throws NoSuchAlgorithmException {
-		Cipher c = null;
-		try {
-			c = Cipher.getInstance("AES/CBC/PKCS5Padding");
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
-		}
-		SecureRandom randomSecureRandom = SecureRandom.getInstance("SHA1PRNG");
-		byte[] iv = new byte[c.getBlockSize()];
-		randomSecureRandom.nextBytes(iv);
-		return iv;
-	}
-
-	public static String base64(byte[] data) {
-		return Base64.getEncoder().encodeToString(data);
-	}
-
-	public static String hash(String passwordToHash) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-		MessageDigest md = MessageDigest.getInstance("SHA-512");
-		byte[] bytes = md.digest(passwordToHash.getBytes("UTF-8"));
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < bytes.length; i++) {
-			sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-		}
-		return sb.toString();
-	}
-
-	public static String getStackTrace(final Throwable throwable) {
-		final StringWriter sw = new StringWriter();
-		final PrintWriter pw = new PrintWriter(sw, true);
-		throwable.printStackTrace(pw);
-		return sw.getBuffer().toString();
 	}
 }
