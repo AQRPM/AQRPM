@@ -100,7 +100,7 @@ public class VaultRegister {
 					+ "What is a bad password?\n\n"
 					+ "Any password that contains names, personal info and dictionary words is very bad.\n\n"
 					+ "We both know you're an inconciderate little prick, and you don't know how to choose a half-decent password.\n"
-					+ "Go get AQRPC, A quite rude password chooser, it might help your tiny brain understand what a good password is.\n");
+					+ "Go get AQRPC, A quite rude password checker, it might help your tiny brain understand what a good password is.\n");
 			Label dl = new Label();
 			dl.setText("Download");
 			dl.setUnderline(true);

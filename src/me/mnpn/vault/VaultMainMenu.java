@@ -55,6 +55,9 @@ public class VaultMainMenu {
 
 		Button newPw = new Button("New password");
 		Button newCat = new Button("New category");
+		newCat.setOnAction(e -> {
+			
+		});
 		toprow.add(newCat, 1, 1);
 		toprow.add(newPw, 2, 1);
 		layout.getChildren().add(toprow);
