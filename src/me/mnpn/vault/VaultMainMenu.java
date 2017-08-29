@@ -1,7 +1,6 @@
 package me.mnpn.vault;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 import javafx.geometry.Insets;
@@ -22,7 +21,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import me.mnpn.vault.structs.StructVault;
 
 public class VaultMainMenu {
 	public static void start(Stage s) throws IOException {
@@ -38,7 +36,7 @@ public class VaultMainMenu {
 		toprow.setHgap(10);
 		toprow.setVgap(10);
 		toprow.setPadding(new Insets(0, 0, 10, 0));
-		
+
 		HBox bottomrow = new HBox();
 		bottomrow.setAlignment(Pos.BOTTOM_RIGHT);
 		bottomrow.setPadding(new Insets(0, 0, 10, 10));
@@ -51,7 +49,7 @@ public class VaultMainMenu {
 		Button newPw = new Button("New password");
 		Button newCat = new Button("New category");
 		newCat.setOnAction(e -> {
-			
+
 		});
 		toprow.add(newCat, 1, 1);
 		toprow.add(newPw, 2, 1);
@@ -64,7 +62,7 @@ public class VaultMainMenu {
 		Text title = new Text(" Welcome, " + Vault.vault.iv); // For now LOL
 		title.setFont(Font.font("Ubuntu", FontWeight.NORMAL, 40));
 		layout.getChildren().add(title);
-		
+
 		Separator bottomseparator = new Separator();
 		bottomseparator.setMaxWidth(s.getMaxWidth());
 		layout.getChildren().add(bottomseparator);
@@ -75,7 +73,7 @@ public class VaultMainMenu {
 			alert.setTitle("Log out");
 			alert.setHeaderText("Logging out");
 			alert.setContentText("This will log you out.");
-			
+
 			alert.setGraphic(new ImageView("/com/sun/javafx/scene/control/skin/modena/dialog-information.png"));
 
 			Optional<ButtonType> result = alert.showAndWait();
@@ -87,7 +85,7 @@ public class VaultMainMenu {
 		});
 		bottomrow.getChildren().add(logout);
 		layout.getChildren().add(bottomrow);
-		
+
 		Scene scene = new Scene(layout, 1024, 512);
 		s.setScene(scene);
 		s.show();
