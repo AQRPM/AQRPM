@@ -55,6 +55,9 @@ public class VaultRegister {
 		selectVault.setOnAction(e -> {
 			FileChooser chooser = new FileChooser();
 			file.set(chooser.showSaveDialog(null));
+		if(chooser != null){
+			selectVault.setText("Vault selected");
+		}
 		});
 		PasswordField password = new PasswordField();
 		password.setPromptText("Password");
@@ -256,14 +259,18 @@ public class VaultRegister {
 				}
 				try {
 					Vault.key = Vault.hash(password.getText());
+					System.out.println(Vault.key);
 				} catch (GeneralSecurityException | UnsupportedEncodingException e) {
 					Vault.stacktrace(e);
 				}
 
 				Vault.vault = new StructVault();
+				System.out.println(Vault.vault);
 				try {
 					Vault.vault.iv = Vault.generateIV();
 					Vault.vault.verification = Vault.encrypt(StructVault.VERIFICATION);
+					System.out.println(Vault.vault.iv);
+					System.out.println(Vault.vault.verification);
 
 					Vault.saveVault(file.get().toPath());
 				} catch (GeneralSecurityException | IOException e) {
