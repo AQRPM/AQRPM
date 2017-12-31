@@ -1,0 +1,6 @@
+[package]
+name = "AQRPM"
+version = "0.1.0"
+authors = ["Mnpn <mnpn03@gmail.com>"]
+
+[dependencies]
