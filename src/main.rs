@@ -1,9 +1,4 @@
-#[macro_use] extern crate failure;
-#[macro_use] extern crate serde_derive;
-extern crate rmp_serde;
-extern crate sodiumoxide;
-
-mod vault;
+extern crate aqrpm;
 
 fn main() {
     println!("Hello, world!");

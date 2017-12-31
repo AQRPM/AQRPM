@@ -2,6 +2,15 @@
 authors = ["Mnpn <mnpn03@gmail.com>"]
 name = "aqrpm"
 version = "0.1.0"
+
+[lib]
+name = "aqrpm"
+path = "src/lib.rs"
+
+[[bin]]
+name = "aqrpm"
+path = "src/main.rs"
+
 [dependencies]
 failure = "0.1.1"
 rmp-serde = "0.13.7"

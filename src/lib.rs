@@ -1,5 +1,9 @@
+#[macro_use] extern crate failure;
+#[macro_use] extern crate serde_derive;
+extern crate rmp_serde;
+extern crate sodiumoxide;
+
 use failure::Error;
-use rmp_serde;
 use sodiumoxide::crypto::{aead, pwhash};
 use std::fs::File;
 use std::io::prelude::*;
