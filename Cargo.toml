@@ -2,18 +2,18 @@
 authors = ["Mnpn <mnpn03@gmail.com>"]
 name = "aqrpm"
 version = "0.1.0"
-
-[lib]
-name = "aqrpm"
-path = "src/lib.rs"
-
 [[bin]]
 name = "aqrpm"
 path = "src/main.rs"
 
 [dependencies]
 failure = "0.1.1"
+gtk = "0.3.0"
 rmp-serde = "0.13.7"
 serde = "1.0.27"
 serde_derive = "1.0.27"
 sodiumoxide = "0.0.16"
+
+[lib]
+name = "aqrpm"
+path = "src/lib.rs"
