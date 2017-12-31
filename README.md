@@ -12,7 +12,7 @@ This is a password manager. Like that's original, right? Okay, now take that ide
 - [License](#license)
 
 ### Notices
-*Warning: There is **a lot** of swearing in this program. If you do not condone the use of vulgular language, this software might not be the right choice for you.*
+*Warning: There is **a lot** of swearing in this program. If you do not condone the use of vulgar language, this software might not be the right choice for you.*
 
 ### Installation
 If you don't want to compile the thing yourself, download the latest release [here](https://github.com/AQRPM/AQRPM/releases).
