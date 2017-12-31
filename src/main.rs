@@ -28,7 +28,7 @@ fn main() {
 
 	let window = Window::new(WindowType::Toplevel);
 	window.set_title("AQRPM - Vault");
-	window.set_default_size(1280, 720);
+	window.set_default_size(1152, 648);
     window.set_border_width(10);
     window.set_position(gtk::WindowPosition::Center);
 
